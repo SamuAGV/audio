@@ -5,51 +5,257 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Subir Audios</title>
     <style>
+        :root {
+            --primary-color: #3498db;
+            --primary-dark: #2980b9;
+            --secondary-color: #e74c3c;
+            --text-color: #333;
+            --light-bg: #f9f9f9;
+            --border-color: #ddd;
+            --success-color: #2ecc71;
+            --card-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
         body {
-            font-family: Arial, sans-serif;
-            max-width: 600px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text-color);
+            background-color: var(--light-bg);
+            line-height: 1.6;
+            max-width: 800px;
             margin: 0 auto;
             padding: 20px;
+            transition: all 0.3s ease;
         }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--border-color);
+        }
+        
+        h1 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            font-size: 2rem;
+        }
+        
+        h2 {
+            color: var(--primary-dark);
+            margin: 25px 0 15px;
+            font-size: 1.5rem;
+        }
+        
+        .upload-container {
+            background-color: white;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: var(--card-shadow);
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
         button {
-            padding: 10px 15px;
-            margin: 5px;
-            cursor: pointer;
-        }
-        #audioList {
-            margin-top: 20px;
-        }
-        .audio-item {
-            margin: 10px 0;
-            padding: 10px;
-            border: 1px solid #ddd;
+            padding: 12px 20px;
+            border: none;
             border-radius: 5px;
+            background-color: var(--primary-color);
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            flex: 1;
+            min-width: 120px;
         }
+        
+        button:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+        
+        button:disabled {
+            background-color: #95a5a6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .delete-btn {
+            background-color: var(--secondary-color);
+            padding: 8px 12px;
+            font-size: 0.9rem;
+        }
+        
+        .delete-btn:hover {
+            background-color: #c0392b;
+        }
+        
         #fileInfo {
-            margin: 10px 0;
+            margin: 15px 0;
             font-style: italic;
+            color: #7f8c8d;
+            font-size: 0.9rem;
         }
+        
+        .input-group {
+            margin: 20px 0;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: var(--primary-dark);
+        }
+        
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+        
+        input[type="text"]:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
+        }
+        
+        input[type="text"]:disabled {
+            background-color: #ecf0f1;
+            cursor: not-allowed;
+        }
+        
         .hidden {
             display: none;
+        }
+        
+        audio {
+            width: 100%;
+            margin: 15px 0;
+            border-radius: 30px;
+        }
+        
+        #audioList {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .audio-item {
+            background-color: white;
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: var(--card-shadow);
+            transition: all 0.3s ease;
+        }
+        
+        .audio-item:hover {
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+            transform: translateY(-3px);
+        }
+        
+        .audio-item p {
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: var(--primary-dark);
+            word-break: break-word;
+            font-size: 1.1rem;
+        }
+        
+        .audio-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 15px;
+        }
+        
+        .upload-status {
+            display: none;
+            text-align: center;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        
+        .success {
+            background-color: rgba(46, 204, 113, 0.2);
+            color: var(--success-color);
+            border: 1px solid var(--success-color);
+            display: block;
+        }
+        
+        .error {
+            background-color: rgba(231, 76, 60, 0.2);
+            color: var(--secondary-color);
+            border: 1px solid var(--secondary-color);
+            display: block;
+        }
+        
+        /* Responsive */
+        @media (max-width: 600px) {
+            body {
+                padding: 15px;
+            }
+            
+            .upload-container {
+                padding: 15px;
+            }
+            
+            h1 {
+                font-size: 1.7rem;
+            }
+            
+            h2 {
+                font-size: 1.3rem;
+            }
+            
+            button {
+                padding: 10px 15px;
+                font-size: 0.9rem;
+            }
+            
+            #audioList {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
 <body>
-    <h1>Subir Audios desde tu Dispositivo</h1>
+    <header>
+        <h1>Subir Audios desde tu Dispositivo</h1>
+    </header>
     
-    <div>
-        <input type="file" id="audioInput" accept="audio/*" class="hidden">
-        <button id="selectBtn">Seleccionar Audio</button>
-        <button id="uploadBtn" disabled>Subir Audio</button>
-    </div>
-    
-    <div id="fileInfo"></div>
-    
-    <audio id="audioPreview" controls style="width: 100%; margin: 10px 0;" class="hidden"></audio>
-    
-    <div>
-        <label for="audioName">Nombre para el audio:</label>
-        <input type="text" id="audioName" placeholder="Nombre del audio" disabled>
+    <div class="upload-container">
+        <div class="button-group">
+            <input type="file" id="audioInput" accept="audio/*" class="hidden">
+            <button id="selectBtn">Seleccionar Audio</button>
+            <button id="uploadBtn" disabled>Subir Audio</button>
+        </div>
+        
+        <div id="fileInfo"></div>
+        
+        <audio id="audioPreview" controls class="hidden"></audio>
+        
+        <div class="input-group">
+            <label for="audioName">Nombre para el audio:</label>
+            <input type="text" id="audioName" placeholder="Nombre del audio" disabled>
+        </div>
+        
+        <div id="uploadStatus" class="upload-status"></div>
     </div>
     
     <h2>Audios Guardados</h2>
@@ -64,6 +270,7 @@
         const audioPreview = document.getElementById('audioPreview');
         const audioName = document.getElementById('audioName');
         const audioList = document.getElementById('audioList');
+        const uploadStatus = document.getElementById('uploadStatus');
         
         let selectedFile = null;
         
@@ -82,7 +289,7 @@
             
             // Validar que sea un archivo de audio
             if (!file.type.startsWith('audio/')) {
-                alert('Por favor selecciona un archivo de audio válido');
+                showStatus('Por favor selecciona un archivo de audio válido', 'error');
                 return;
             }
             
@@ -113,6 +320,10 @@
             const extension = selectedFile.name.split('.').pop();
             const fileName = `${name}.${extension}`;
             
+            // Mostrar estado de carga
+            showStatus('Subiendo audio...', '');
+            uploadBtn.disabled = true;
+            
             const formData = new FormData();
             formData.append('audio', selectedFile, fileName);
             
@@ -123,16 +334,18 @@
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    alert('Audio subido correctamente');
+                    showStatus('¡Audio subido correctamente!', 'success');
                     loadAudioList();
                     resetUploader();
                 } else {
-                    alert('Error al subir el audio: ' + (data.message || ''));
+                    showStatus('Error al subir el audio: ' + (data.message || ''), 'error');
+                    uploadBtn.disabled = false;
                 }
             })
             .catch(error => {
                 console.error('Error:', error);
-                alert('Error al subir el audio');
+                showStatus('Error al subir el audio', 'error');
+                uploadBtn.disabled = false;
             });
         });
         
@@ -154,7 +367,7 @@
                     audioList.innerHTML = '';
                     
                     if (audios.length === 0) {
-                        audioList.innerHTML = '<p>No hay audios guardados aún.</p>';
+                        audioList.innerHTML = '<p style="text-align: center; color: #7f8c8d; margin: 20px 0;">No hay audios guardados aún.</p>';
                         return;
                     }
                     
@@ -166,20 +379,26 @@
                         audioElement.controls = true;
                         audioElement.src = `/audios/${encodeURIComponent(audio)}`;
                         
+                        const audioControls = document.createElement('div');
+                        audioControls.className = 'audio-controls';
+                        
                         const deleteBtn = document.createElement('button');
                         deleteBtn.textContent = 'Eliminar';
+                        deleteBtn.className = 'delete-btn';
                         deleteBtn.onclick = () => deleteAudio(audio);
+                        
+                        audioControls.appendChild(deleteBtn);
                         
                         audioItem.innerHTML = `<p>${audio}</p>`;
                         audioItem.appendChild(audioElement);
-                        audioItem.appendChild(deleteBtn);
+                        audioItem.appendChild(audioControls);
                         
                         audioList.appendChild(audioItem);
                     });
                 })
                 .catch(error => {
                     console.error('Error al cargar audios:', error);
-                    audioList.innerHTML = '<p>Error al cargar la lista de audios.</p>';
+                    audioList.innerHTML = '<p style="text-align: center; color: #e74c3c; margin: 20px 0;">Error al cargar la lista de audios.</p>';
                 });
         }
         
@@ -191,14 +410,15 @@
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
+                        showStatus(`Audio "${filename}" eliminado correctamente`, 'success');
                         loadAudioList();
                     } else {
-                        alert('Error al eliminar el audio');
+                        showStatus('Error al eliminar el audio', 'error');
                     }
                 })
                 .catch(error => {
                     console.error('Error:', error);
-                    alert('Error al eliminar el audio');
+                    showStatus('Error al eliminar el audio', 'error');
                 });
             }
         }
@@ -209,6 +429,21 @@
             const sizes = ['Bytes', 'KB', 'MB', 'GB'];
             const i = Math.floor(Math.log(bytes) / Math.log(k));
             return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+        
+        function showStatus(message, type) {
+            uploadStatus.textContent = message;
+            uploadStatus.className = 'upload-status';
+            if (type) {
+                uploadStatus.classList.add(type);
+            }
+            
+            // Si es un mensaje de éxito o error, ocultarlo después de 3 segundos
+            if (type === 'success' || type === 'error') {
+                setTimeout(() => {
+                    uploadStatus.style.display = 'none';
+                }, 3000);
+            }
         }
     </script>
 </body>
